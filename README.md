@@ -28,12 +28,12 @@ LIVE_SECRET_KEY: Paystack_Live_Secret_Key_here
 
 ### Deploy!
 
-```bash:development
-$ serverless deploy -v
+```bash:production
+$ serverless deploy
 ```
 
-or production
+or development
 
-```bash:production
-$ serverless deploy -v --stage live
+```bash:development
+$ serverless deploy -v --stage dev
 ```
