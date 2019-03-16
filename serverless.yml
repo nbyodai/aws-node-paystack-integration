@@ -26,9 +26,10 @@ provider:
   #environment: ${file(env.yml):${self:provider.stage}}
 
 functions:
-  hello:
-    handler: handler.hello
+  incoming:
+    handler: handler.main
     events:
       - http:
-          path: hello
-          method: get
+          path: paystack/incoming
+          method: post
+          cors: true
