@@ -1,63 +1,43 @@
 "use strict";
+import { success, failure, serverFailure } from "./libs/response-lib";
 
-const config = {
-  paystack: {
-    test_sk: "pk_test_3cd3786a478961c06c92fc99df625d5fbf952e57",
-    live_sk: "sk_live_XXXXXXXXXXXXXXXXXXXXXXXX"
-  }
-};
-
-export async function main(event, context, callback) {
+export async function main(event, context) {
+  console.log({ context });
   const requestContextStage = event.requestContext
     ? event.requestContext.stage
     : "test";
 
   const paystackApiKey =
     requestContextStage === "test"
-      ? config.paystack.test_sk
-      : config.paystack.live_sk;
+      ? process.env.TEST_SECRET_KEY
+      : process.env.LIVE_SECRET_KEY;
 
   const paystack = require("paystack")(paystackApiKey);
 
   try {
     // parse data
     const jsonData = JSON.parse(event.body);
-
     // verify the event buy fetching it from Paystack
     // console.log("Paystack Event: %j", jsonData);
     const { status, data } = await paystack.transaction.verify(
       jsonData.data.reference
     );
-
-    const eventType = status ? jsonData.event : "";
-    let response = {};
+    const eventType = status ? jsonData.event : "failed.verification";
     console.log(`Paystack Event: ${eventType}`);
+
+    let message = "";
+    let stage = requestContextStage;
     switch (eventType) {
       case "charge.success":
-        response = {
-          statusCode: 200,
-          body: JSON.stringify({
-            message: "Success! Paystack webhook incoming!",
-            stage: requestContextStage
-          })
-        };
-        break;
+        message = "Success! Paystack webhook incoming!";
+        return success({ message, stage });
+      case "failed.verification":
+        message = "Fail! Paystack webhook incoming!";
+        return failure({ message, stage });
       default:
-        response = {
-          statusCode: 400,
-          body: JSON.stringify({
-            message: "Fail! Paystack webhook incoming!",
-            stage: requestContextStage
-          })
-        };
         break;
     }
-    callback(null, response);
   } catch (err) {
-    callback(null, {
-      statusCode: err.statusCode || 501,
-      headers: { "Content-Type": "text/plain" },
-      body: err.message || "Internal server error"
-    });
+    return serverFailure(err.message || "Internal server error");
   }
 }

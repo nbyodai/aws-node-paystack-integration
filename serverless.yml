@@ -23,7 +23,7 @@ provider:
   # the following line. Also, make sure to not
   # commit your env.yml.
   #
-  #environment: ${file(env.yml):${self:provider.stage}}
+  environment: ${file(env.yml)}
 
 functions:
   incoming:
