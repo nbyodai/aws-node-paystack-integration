@@ -1,7 +1,7 @@
 {
-  "name": "app",
-  "version": "1.1.0",
-  "description": "A Node.js starter for the Serverless Framework with async/await and unit test support",
+  "name": "aws-node-paystack-integration",
+  "version": "0.1.0",
+  "description": "A simple way to host a serverless webhook for your paystack enabled business",
   "main": "handler.js",
   "scripts": {
     "test": "jest"
@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",
+    "paystack": "^2.0.1",
     "source-map-support": "^0.4.18"
   }
 }
