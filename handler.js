@@ -2,7 +2,6 @@
 import { success, failure, serverFailure } from "./libs/response-lib";
 
 export async function main(event, context) {
-  console.log({ context });
   const requestContextStage = event.requestContext
     ? event.requestContext.stage
     : "test";
@@ -19,9 +18,8 @@ export async function main(event, context) {
     const jsonData = JSON.parse(event.body);
     // verify the event buy fetching it from Paystack
     // console.log("Paystack Event: %j", jsonData);
-    const { status, data } = await paystack.transaction.verify(
-      jsonData.data.reference
-    );
+    const txRef = jsonData.data.reference;
+    const { status, data } = await paystack.transaction.verify(txRef);
     const eventType = status ? jsonData.event : "failed.verification";
     console.log(`Paystack Event: ${eventType}`);
 

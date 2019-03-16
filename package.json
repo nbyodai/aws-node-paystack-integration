@@ -4,13 +4,14 @@
   "description": "A simple way to host a serverless webhook for your paystack enabled business",
   "main": "handler.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test-local": "sls invoke local --function incoming --path mocks/charge.success-event.json"
   },
   "author": "",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AnomalyInnovations/serverless-nodejs-starter.git"
+    "url": "https://github.com/nbyodai/aws-node-paystack-integration"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",

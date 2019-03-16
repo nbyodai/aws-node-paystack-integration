@@ -3,18 +3,12 @@
 // ?? do something on success
 // ?? do something on failure
 
-import * as paystack_handler from "../charge";
+import { main } from "../handler";
 
 test("receive incoming hook", async () => {
   const event = "event";
   const context = "context";
-  const callback = (error, response) => {
-    console.log(response);
-    expect(response.statusCode).toEqual(200);
-    expect(typeof response.body).toBe("string");
-  };
-
-  await paystack_handler.incoming(event, context, callback);
+  await main(event, context);
 });
 
 const demoTransactionInfo = {
