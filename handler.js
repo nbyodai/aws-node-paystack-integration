@@ -1,7 +1,6 @@
-"use strict";
 import { success, failure, serverFailure } from "./libs/response-lib";
 
-export async function main(event, context) {
+export const main = async (event, context) => {
   const requestContextStage = event.requestContext
     ? event.requestContext.stage
     : "test";
@@ -16,26 +15,31 @@ export async function main(event, context) {
   try {
     // parse data
     const jsonData = JSON.parse(event.body);
-    // verify the event buy fetching it from Paystack
-    // console.log("Paystack Event: %j", jsonData);
+    // verify the event by fetching it from Paystack
     const txRef = jsonData.data.reference;
-    const { status, data } = await paystack.transaction.verify(txRef);
+    const { status, message } = await paystack.transaction.verify(txRef);
+    // status is type boolean
     const eventType = status ? jsonData.event : "failed.verification";
-    console.log(`Paystack Event: ${eventType}`);
 
-    let message = "";
+    let msg = "";
     let stage = requestContextStage;
     switch (eventType) {
       case "charge.success":
-        message = "Success! Paystack webhook incoming!";
-        return success({ message, stage });
+        msg = "Success! Paystack webhook incoming!";
+        console.log(
+          `Paystack Event: ${eventType} | Verify Message: ${message}`
+        );
+        return success({ msg, stage });
       case "failed.verification":
-        message = "Fail! Paystack webhook incoming!";
-        return failure({ message, stage });
+        msg = "Fail! Paystack webhook incoming!";
+        console.log(
+          `Paystack Event: ${eventType} | Verify Message: ${message}`
+        );
+        return failure({ msg, stage });
       default:
         break;
     }
   } catch (err) {
     return serverFailure(err.message || "Internal server error");
   }
-}
+};

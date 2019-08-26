@@ -1,31 +1,33 @@
-# NOTE: update this with your service name
 service: aws-node-paystack-integration
 
-# Use the serverless-webpack plugin to transpile ES6
-plugins:
-  - serverless-webpack
-  - serverless-offline
+package:
+  individually: true
 
-# serverless-webpack configuration
-# Enable auto-packing of external modules
-custom:
-  webpack:
-    webpackConfig: ./webpack.config.js
-    includeModules: true
+plugins:
+  - serverless-bundle
+  - serverless-offline
 
 provider:
   name: aws
   runtime: nodejs8.10
-  stage: prod
+  stage: dev
   region: eu-central-1
   # To load environment variables externally
   # rename env.example to env.yml and uncomment
   # the following line. Also, make sure to not
   # commit your env.yml.
   #
+  # environment: ${file(env.yml):${self:provider.stage}}
   environment: ${file(env.yml)}
 
 functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
+
   incoming:
     handler: handler.main
     events:
