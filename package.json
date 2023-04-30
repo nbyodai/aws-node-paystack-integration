@@ -16,7 +16,7 @@
   "devDependencies": {
     "jest": "^25.0.0",
     "serverless-bundle": "^1.2.3",
-    "serverless-offline": "^5.3.3"
+    "serverless-offline": "^12.0.4"
   },
   "dependencies": {
     "paystack": "^2.0.1"
